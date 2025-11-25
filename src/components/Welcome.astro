@@ -1,17 +1,47 @@
 ---
 import astroLogo from '../assets/Bon-Train.png';
 import background from '../assets/background.svg';
+import { Image } from "astro:assets";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/shop_photos/*.{jpg,jpeg,png,webp}",
+);
 ---
 
 <div id="container">
 	<!-- <img id="background" src={background.src} alt="" fetchpriority="high" /> -->
 	<main>
 		<section id="hero">
-			<div id="about">
+			<div id="about" class="wrapper">
 				<h1>ABT</h1>
 				<p>Atelier Bon Train is an inclusive woodworking studio that seeks to provide affordable access to woodworking tools and machinery for artisans and artists, and offer specialized services to visual artists. Established in the fall of 2020 by Rafaël Khoury, Kevin Husereault and Elizabeth Xu, Bon Train originated from a modest basement studio in the Plateau-Mont Royal. Khoury, Huserault and Xu set out to foster a unique, diverse and inclusive space for artists and woodworkers to share skills and knowledge. We welcome anyone to join us in our mission to serve the community better. </p>
 			</div>
-			<div id="machines">
+
+      <div id ="gallery">
+  <section class="justified-gallery" id="photoswipe">
+    {
+      Object.entries(images).map(async ([_path, image], index) => {
+        const { default: imageData } = await image();
+        return (
+          <a
+            style={`--width: ${imageData.width}; --height: ${imageData.height};`}
+            href={imageData.src}
+            target="_blank"
+            data-fancybox="gallery"
+          >
+            <Image
+              src={imageData}
+              alt=""
+              height={400}
+              loading={index < 20 ? "eager" : "lazy"}
+            />
+          </a>
+        );
+      })
+    }
+  </section>
+      </div>
+      	<div id="machines">
 				<h1>Machinery</h1>
 				<p>We are equipped with all essential machinery for furniture and cabinetry fabrication. </p>
 				<p>12” Sliding Compound Miter Saw
@@ -46,7 +76,7 @@ Shared work benches</p>
         <p>Something about membership. To use the woodshop’s services, artists and artisans must hold a valid membership, payable annually*. They must also prove sufficient knowledge of basic woodworking skills and use of hand tools and machinery available in the woodshop. *Memberships are for individuals only and are non-transferable. Memberships may be revoked in case of non-compliance to regulations of use or safety measures in place in the woodshop. (took this from clark for an example)</p>
         <p>To view membership guidelines, LINK or someththing</p>
         <h2>Day/Hourly Rental</h2>
-        <p>Something about days for this? if there is a calender or something</p>
+        <p>Something about days for this? if there is a calender  link or something</p>
         <p>$15/hour or $75/day</p>
         <p>Our space is available for hourly or daily rentals from Monday to Friday 9am - 5pm
 </p>
@@ -60,3 +90,32 @@ Shared work benches</p>
 
 
 </div>
+    <script>
+      import { Fancybox } from "@fancyapps/ui";
+      import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+      // Initialize Fancybox when the DOM is ready
+      document.addEventListener('DOMContentLoaded', () => {
+        Fancybox.bind("[data-fancybox]", {
+          // Your Fancybox options here
+              theme: "auto",
+    mainStyle: {
+      "--f-button-width": "44px",
+      "--f-button-height": "44px",
+      "--f-button-border-radius": "50%",
+      "--f-toolbar-padding": "16px",
+    },
+    Carousel: {
+      Arrows: false,
+      Toolbar: {
+        display: {
+          left: [],
+          middle: [],
+          right: ["close"],
+        },
+      },
+      transition: "slide",
+    },
+        });
+      });
+    </script>
